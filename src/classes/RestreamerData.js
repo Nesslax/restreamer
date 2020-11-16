@@ -144,8 +144,7 @@ class RestreamerData {
             .catch((error) => {
                 var defaultStructure = {
                     addresses: {
-                        srcAddress: '',
-                        optionalOutputAddress: ''
+                        srcAddress: ''
                     },
                     options: {
                         rtspTcp: true,
@@ -175,7 +174,7 @@ class RestreamerData {
                                 link: ''
                             }
                         },
-                        output: {
+                        outputs: [{
                             type: 'rtmp',
                             rtmp: {},
                             hls: {
@@ -183,20 +182,21 @@ class RestreamerData {
                                 time: '2',
                                 listSize: '10',
                                 timeout: '10'
-                            }
-                        }
+                            },
+                            outputAddress: '',
+                        }]
                     },
                     states: {
                         repeatToLocalNginx: {
                             type: 'stopped'
                         },
-                        repeatToOptionalOutput: {
+                        repeatToOptionalOutput_0: {
                             type: 'stopped'
                         }
                     },
                     userActions: {
                         repeatToLocalNginx: 'stop',
-                        repeatToOptionalOutput: 'stop'
+                        repeatToOptionalOutput_0: 'stop',
                     }
                 };
 
@@ -209,8 +209,28 @@ class RestreamerData {
                     // Set stream destination and start streaming on a fresh installation
                     if(process.env.RS_OUTPUTSTREAM != '') {
                         defaultStructure.addresses.optionalOutputAddress = process.env.RS_OUTPUTSTREAM;
-                        defaultStructure.states.repeatToOptionalOutput.type = 'connected';
-                        defaultStructure.userActions.repeatToOptionalOutput = 'start';
+                        defaultStructure.states.repeatToOptionalOutput_0.type = 'connected';
+                        defaultStructure.userActions.repeatToOptionalOutput_0 = 'start';
+                    }
+                }
+
+                // Adjust the structure for multiple outputs
+                if (process.env.RS_EXTRA_OUTPUTS > 1) {
+                    for (let i = 1; i < process.env.RS_EXTRA_OUTPUTS; i++) {
+                        const id = 'repeatToOptionalOutput_' + i;
+                        defaultStructure.states[id] = {'type': 'stopped'};
+                        defaultStructure.userActions[id] = 'stop';
+                        defaultStructure.options.outputs.push({
+                            type: 'rtmp',
+                            rtmp: {},
+                            hls: {
+                                method: 'POST',
+                                time: '2',
+                                listSize: '10',
+                                timeout: '10'
+                            },
+                            outputAddress: ''
+                        });
                     }
                 }
 

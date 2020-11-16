@@ -130,7 +130,7 @@
                 ]
             },
             "video": {
-                 "outputOptions": [
+                "outputOptions": [
                     "-map_metadata -1",
                     "-metadata application=datarhei/Restreamer"
                 ]
@@ -185,7 +185,7 @@
                 ]
             }
         },
-        "probe":{
+        "probe": {
             "timeout": "30000"
         },
         "monitor": {
@@ -332,14 +332,21 @@
             "defaultValue": "",
             "required": false,
             "description": "Automatically start pulling from this stream on a fresh Restreamer installation."
-        },
-        {
+        }, {
             "name": "RS_OUTPUTSTREAM",
             "alias": [],
             "type": "string",
             "defaultValue": "",
             "required": false,
             "description": "Automatically start pushing to this stream on a fresh Restreamer installation."
+        },
+        {
+            "name": "RS_EXTRA_OUTPUTS",
+            "alias": [],
+            "type": "int",
+            "defaultValue": "1",
+            "required": false,
+            "description": "Enables multiple output streams in the webinterface and in the streaming server."
         }
     ]
 }
